@@ -30,6 +30,7 @@
             background-color: var(--bg-outer);
             color: var(--text-content);
             line-height: 1.6;
+            overflow-x: hidden; /* Mobil cihazlarda yatay kaymayı tamamen engeller */
         }
 
         /* Üst Menü (Navbar) */
@@ -40,6 +41,7 @@
             z-index: 1000;
             border-bottom: 3px solid var(--accent-red);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
         }
 
         .navbar {
@@ -49,6 +51,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
+            flex-wrap: wrap; /* Mobilde elemanların alt satıra geçebilmesini sağlar */
         }
 
         .logo {
@@ -67,6 +70,7 @@
             display: flex;
             list-style: none;
             gap: 1.5rem;
+            flex-wrap: wrap; /* Linklerin küçük ekranlarda sığmasını sağlar */
         }
 
         .nav-links a {
@@ -86,8 +90,9 @@
             display: none;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2rem 1rem; /* Mobil için sağ ve sol iç boşluklar dengelendi */
             animation: fadeIn 0.5s ease-in-out forwards;
+            width: 100%;
         }
 
         .page.active {
@@ -104,15 +109,16 @@
             text-align: center;
             margin: 3rem 0 0.5rem 0;
             color: var(--text-dark);
-            font-size: 2.8rem;
+            font-size: clamp(1.8rem, 5vw, 2.8rem); /* Ekran küçüldükçe başlığı otomatik küçültür, kaymayı önler */
             font-weight: 800;
+            word-wrap: break-word;
         }
 
         .hero-subtitle {
             text-align: center;
             color: var(--text-muted-dark);
             margin-bottom: 4rem;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             font-weight: 500;
         }
 
@@ -122,12 +128,6 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 2.5rem;
             margin-bottom: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         .news-card {
@@ -140,6 +140,7 @@
             flex-direction: column;
             justify-content: space-between;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 100%;
         }
 
         .news-card:hover {
@@ -212,6 +213,7 @@
             margin: 0 auto;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid var(--border-color);
+            width: 100%;
         }
 
         .article-header {
@@ -227,14 +229,15 @@
         }
 
         .article-title {
-            font-size: 2.5rem;
+            font-size: clamp(1.6rem, 6vw, 2.5rem); /* Mobilde detay başlıklarının kaymasını ve taşmasını önler */
             line-height: 1.2;
             margin: 0.5rem 0 1rem 0;
             color: #000000;
+            word-wrap: break-word;
         }
 
         .article-sub {
-            font-size: 1.2rem;
+            font-size: clamp(1.05rem, 3.5vw, 1.2rem);
             color: var(--text-muted-dark);
             font-weight: 500;
             border-left: 3px solid var(--accent-red);
@@ -251,7 +254,7 @@
             width: 100%;
             max-height: 500px;
             object-fit: cover;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
@@ -263,14 +266,6 @@
             margin: 1.5rem 0;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-        }
-
-        .img-caption {
-            font-size: 0.9rem;
-            color: var(--text-muted-dark);
-            text-align: center;
-            margin-bottom: 2rem;
-            font-style: italic;
         }
 
         .article-content p {
@@ -351,6 +346,31 @@
             border-top: 1px solid rgba(230, 92, 92, 0.1);
             color: var(--text-muted);
             font-size: 0.9rem;
+            width: 100%;
+        }
+
+        /* ================= MOBİL MEDİA QUERIES (SADECE KAYMALARI DÜZELTEN EK CSS) ================= */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column; /* Mobilde menüyü dikey hizalar */
+                gap: 1rem;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr; /* Mobilde kartları tek sütun yapar */
+                gap: 1.5rem;
+            }
+
+            .article-container {
+                padding: 1.5rem 1rem; /* Detay sayfasının mobildeki taşmasını engeller */
+            }
         }
     </style>
 </head>
@@ -411,7 +431,7 @@
                 </div>
             </div>
 
-            <!-- Kart 4: Economic (GÜNCEL FOTOĞRAF) -->
+            <!-- Kart 4: Economic -->
             <div class="news-card">
                 <img src="economic2.jpeg" alt="Local grocery fruit display" class="card-img">
                 <div class="card-content">
@@ -436,7 +456,6 @@
                 </div>
                 
                 <img src="society2.jpeg" alt="Stray dog sleeping with a blanket on the streets of Istanbul" class="article-main-img">
-               
 
                 <div class="article-content">
                     <p><strong>ISTANBUL –</strong> In the early morning hours, another sound blends with the echo of seagulls against Istanbul's gray concrete: the purring of a cat with its paw on the pavement, watching passersby, or the peaceful slumber of a dog lying on blankets in front of a nearby shop. They are the "invisible" inhabitants of this ancient city. We pass by them every day, but in the hustle and bustle of modern city life, we often overlook the responsibility that comes with sharing this living space.</p>
@@ -458,7 +477,6 @@
                     </div>
 
                     <img src="society3.jpeg" alt="Local volunteer feeding a stray cat at night" class="article-secondary-img">
-                   
 
                     <h3>What can we do?</h3>
                     <p>Our social responsibility shouldn't be limited to providing food. Experts and volunteers suggest the following steps for responsible citizenship:</p>
@@ -486,7 +504,6 @@
                 </div>
                 
                 <img src="sports2.jpeg" alt="Murat Arın preparing a hit during an indoor wheelchair tennis session" class="article-main-img">
-                
 
                 <div class="article-content">
                     <p><strong>ISTANBUL —</strong> For many, a tennis court is a place of recreation; for Murat Arın, it is a space for high-intensity athleticism. Wheelchair tennis, a sport that demands intense upper-body strength, rapid wheelchair maneuvering, and sharp focus, is gaining momentum as a competitive discipline. Through his journey, Arın proves that physical limitations are simply challenges to overcome with the right training and dedication.</p>
@@ -505,7 +522,6 @@
                     </div>
 
                     <img src="sports3.jpeg" alt="Murat Arın volleying the ball back to his training partner" class="article-secondary-img">
-                    
 
                     <h3>Breaking Stigmas Through Performance</h3>
                     <p>Wheelchair tennis does more than build physical strength; it actively challenges the passive role often assigned to individuals with physical disabilities by society. By mastering the court, athletes like Mr. Arın redefine the boundaries of what is possible in sports.</p>
@@ -527,7 +543,6 @@
                 </div>
                 
                 <img src="urban3.jpeg" alt="Gated luxury complexes rising directly above old neighborhood structures" class="article-main-img">
-                
 
                 <div class="article-content">
                     <p><strong>ISTANBUL —</strong> Kağıthane, once known as a core industrial and working-class district, is currently undergoing one of the fastest urban transformations in Istanbul. While massive luxury housing complexes and modern business centers reshape the physical skyline, the traditional neighborhood life that defined the area for decades is gradually disappearing. This architectural shift brings a complex set of economic and social changes for the people who call Kağıthane home.</p>
@@ -543,7 +558,6 @@
                     <p>The physical transformation of Kağıthane is visible on almost every corner. Old, low-rise family buildings now stand directly next to gated modern complexes, creating a sharp visual and social contrast.</p>
 
                     <img src="urban1.jpeg" alt="Local resident Mr. Necati standing in front of a shop" class="article-secondary-img">
-                   
 
                     <div class="interview-block">
                         <p class="question">— How has the neighborhood changed since the luxury residences were built, and how does it affect your daily life?</p>
@@ -558,13 +572,12 @@
                     <p>As high-rise developments continue to expand, finding a balance between modernization and preserving local heritage remains a major challenge for Kağıthane. The preservation of communal spaces, parks, and traditional high streets is vital to preventing complete social isolation and ensuring that the district's history is not entirely erased by gentrification.</p>
 
                     <img src="urban4.jpeg" alt="Winding uphill street in Kağıthane showcasing traditional apartment housing styles" class="article-secondary-img">
-                   
                 </div>
             </article>
         </div>
     </div>
 
-    <!-- ================= HABER 4: ECONOMIC (GÜNCELLENMİŞ TAM İÇERİK) ================= -->
+    <!-- ================= HABER 4: ECONOMIC ================= -->
     <div id="story4" class="page">
         <div class="article-container">
             <article>
@@ -576,7 +589,6 @@
                 </div>
                 
                 <img src="economic1.jpeg" alt="Display of traditional prepared food dishes at a local restaurant" class="article-main-img">
-                
 
                 <div class="article-content">
                     <p><strong>ISTANBUL —</strong> The ongoing economic fluctuations in Turkey are changing the landscape of local commerce. For decades, neighborhood shops like grocers, butchers, and bakers served as the social and economic backbone of local communities. Today, however, these small businesses are caught in a difficult position: they must balance their own rapidly rising operating costs against the shrinking purchasing power of their daily customers.</p>
@@ -592,7 +604,6 @@
                     <p>Small business owners face inflation from two sides: the increasing cost of supplying goods and the declining ability of their community to afford them.</p>
 
                     <img src="economic3.jpeg" alt="Local tradesman Ahmet Bey inside his shop corner counter" class="article-secondary-img">
-                
 
                     <div class="interview-block">
                         <p class="question">— How have the recent economic fluctuations affected your business operations and your relationship with customers?</p>
@@ -606,10 +617,9 @@
                     <p>The struggle to maintain purchasing power is a structural issue altering the survival rate of family-owned businesses across the city. To support these findings, visuals and graphics are integrated into the report to illustrate the precise gap between rising supply costs and average household budgets.</p>
 
                     <img src="economic4.jpeg" alt="Bar chart comparing staple grocery costs between 2025 and 2026" class="article-secondary-img">
-                    
 
                     <img src="economic5.jpeg" alt="Expense layout chart showing operational overhead shares against profit margin" class="article-secondary-img">
-                    
+
                     <p>Without structural support or local community intervention, the traditional counter separating the local seller and the neighborhood buyer faces an uncertain financial future.</p>
                 </div>
             </article>
