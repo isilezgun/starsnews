@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stars News | New Media Project</title>
+    <style>
+        /* Renk Paleti ve Temel Ayarlar */
+        :root {
+            --bg-outer: #f4f6f9;       /* Genel Dış Arka Plan (Açık Gri/Beyazımsı) */
+            --bg-navbar: #0a1128;      /* Menü İçin Gece Mavisi Kontrastı */
+            --bg-card: #ffffff;        /* Kartlar ve Ana Okuma Alanları İçin Saf Beyaz */
+            --accent-red: #e65c5c;     /* Soft Kırmızı */
+            --accent-navy: #0a1128;    /* Tıklanma/Üzerine Gelme İçin Koyu Lacivert */
+            --text-white: #ffffff;      /* Menü İçindeki Beyaz Yazılar */
+            --text-dark: #1a202c;       /* Ana Başlıklar İçin Koyu Renk */
+            --text-content: #2d3748;    /* Metinler İçin Rahat Okunabilir Koyu Gri */
+            --text-muted-dark: #718096; /* Alt Detaylar ve Gri Yazılar */
+            --border-color: #e2e8f0;    /* İnce Çerçeve ve Çizgi Rengi */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-outer);
+            color: var(--text-content);
+            line-height: 1.6;
+        }
+
+        /* Üst Menü (Navbar) */
+        header {
+            background-color: var(--bg-navbar);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-red);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent-red);
+        }
+
+        /* SPA Sayfa Yönetimi (Görünürlük Animasyonu) */
+        .page {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ana Sayfa Tema Ayarları */
+        .hero-title {
+            text-align: center;
+            margin: 3rem 0 0.5rem 0;
+            color: var(--text-dark);
+            font-size: 2.8rem;
+            font-weight: 800;
+        }
+
+        .hero-subtitle {
+            text-align: center;
+            color: var(--text-muted-dark);
+            margin-bottom: 4rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* 2 Üstte, 2 Altta Olacak Şekilde İkili Grid Düzeni */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .news-card {
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-red);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-tag {
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .card-excerpt {
+            color: var(--text-content);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Read Article Butonları */
+        .read-more-btn {
+            background-color: transparent;
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 0.7rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .read-more-btn:hover, .read-more-btn:active {
+            background-color: var(--accent-navy);
+            border-color: var(--accent-navy);
+            color: var(--text-white);
+        }
+
+        /* Haber Detay Sayfası - Beyaz Okuma Alanı */
+        .article-container {
+            background-color: var(--bg-card);
+            color: var(--text-dark);
+            padding: 3rem;
+            border-radius: 8px;
+            max-width: 850px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .article-header {
+            margin-bottom: 2rem;
+        }
+
+        .article-tag {
+            color: var(--accent-red);
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin: 0.5rem 0 1rem 0;
+            color: #000000;
+        }
+
+        .article-sub {
+            font-size: 1.2rem;
+            color: var(--text-muted-dark);
+            font-weight: 500;
+            border-left: 3px solid var(--accent-red);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-meta {
+            color: var(--text-muted-dark);
+            font-size: 0.9rem;
+        }
+
+        .article-main-img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .article-secondary-img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .img-caption {
+            font-size: 0.9rem;
+            color: var(--text-muted-dark);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .article-content p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+        }
+
+        .article-content h3 {
+            color: #000000;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3rem;
+            margin: 2rem 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .article-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Alıntı Kutusu */
+        .pull-quote {
+            background-color: #f7fafc;
+            border-left: 4px solid var(--accent-red);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pull-quote p {
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .pull-quote cite {
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        /* Röportaj Soru-Cevap Düzeni */
+        .interview-block {
+            margin: 1.5rem 0;
+        }
+
+        .question {
+            font-weight: bold;
+            color: var(--accent-red);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .answer {
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 1px solid #cbd5e0;
+            color: #2d3748;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-navbar);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(230, 92, 92, 0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ÜST MENÜ (NAVBAR) -->
+    <header>
+        <div class="navbar">
+            <div class="logo" onclick="navigateTo('home')">Stars News ✦</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a onclick="navigateTo('home')" id="nav-home" class="active">Home</a></li>
+                    <li><a onclick="navigateTo('story1')" id="nav-story1">Society</a></li>
+                    <li><a onclick="navigateTo('story2')" id="nav-story2">Sports</a></li>
+                    <li><a onclick="navigateTo('story3')" id="nav-story3">Urban</a></li>
+                    <li><a onclick="navigateTo('story4')" id="nav-story4">Economic</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= ANA SAYFA (HOME) ================= -->
+    <main id="home" class="page active">
+        <h1 class="hero-title">Current News</h1>
+        <p class="hero-subtitle">A New Media Journalism Project</p>
+        
+        <div class="news-grid">
+            <!-- Kart 1: Society -->
+            <div class="news-card">
+                <img src="society1.jpeg" alt="Stray Cat in Istanbul" class="card-img">
+                <div class="card-content">
+                    <span class="card-tag">Society</span>
+                    <h2 class="card-title">Society: The Invisible Citizens of the City</h2>
+                    <p class="card-excerpt">Millions of street animals roaming the streets of Istanbul struggle not only for shelter but also for social acceptance.</p>
+                    <button class="read-more-btn" onclick="navigateTo('story1')">Read Article</button>
+                </div>
+            </div>
+
+            <!-- Kart 2: Sports -->
+            <div class="news-card">
+                <img src="sports1.jpeg" alt="Wheelchair Tennis Match" class="card-img">
+                <div class="card-content">
+                    <span class="card-tag">Sports</span>
+                    <h2 class="card-title">Sports: Breaking Barriers on the Court</h2>
+                    <p class="card-excerpt">Behind every powerful stroke lies a genuine story of discipline, intense training, and athletic commitment with Murat Arın.</p>
+                    <button class="read-more-btn" onclick="navigateTo('story2')">Read Article</button>
+                </div>
+            </div>
+
+            <!-- Kart 3: Urban -->
+            <div class="news-card">
+                <img src="urban2.jpeg" alt="Architectural contrast in Kağıthane" class="card-img">
+                <div class="card-content">
+                    <span class="card-tag">Urbanization</span>
+                    <h2 class="card-title">Urban: Kağıthane Landscape of Transformation</h2>
+                    <p class="card-excerpt">The rapid rise of modern luxury residences directly challenges traditional neighborhood culture and local heritage.</p>
+                    <button class="read-more-btn" onclick="navigateTo('story3')">Read Article</button>
+                </div>
+            </div>
+
+            <!-- Kart 4: Economic (GÜNCEL FOTOĞRAF) -->
+            <div class="news-card">
+                <img src="economic2.jpeg" alt="Local grocery fruit display" class="card-img">
+                <div class="card-content">
+                    <span class="card-tag">Economy</span>
+                    <h2 class="card-title">Economic: Between the Wallet and the Counter</h2>
+                    <p class="card-excerpt">Rising operating costs and shrinking customer budgets place a heavy dual burden on traditional small businesses.</p>
+                    <button class="read-more-btn" onclick="navigateTo('story4')">Read Article</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= HABER 1: SOCIETY ================= -->
+    <div id="story1" class="page">
+        <div class="article-container">
+            <article>
+                <div class="article-header">
+                    <span class="article-tag">Society</span>
+                    <h1 class="article-title">The Invisible Citizens of the City: Street Animals and Social Responsibility</h1>
+                    <p class="article-sub">Millions of street animals roaming the streets of Istanbul struggle not only for shelter but also for social acceptance. There is a clear consensus among volunteers and experts: the city is big enough for all of us.</p>
+                    <div class="article-meta">Published: June 2026 | By Işıl Ezgün</div>
+                </div>
+                
+                <img src="society2.jpeg" alt="Stray dog sleeping with a blanket on the streets of Istanbul" class="article-main-img">
+               
+
+                <div class="article-content">
+                    <p><strong>ISTANBUL –</strong> In the early morning hours, another sound blends with the echo of seagulls against Istanbul's gray concrete: the purring of a cat with its paw on the pavement, watching passersby, or the peaceful slumber of a dog lying on blankets in front of a nearby shop. They are the "invisible" inhabitants of this ancient city. We pass by them every day, but in the hustle and bustle of modern city life, we often overlook the responsibility that comes with sharing this living space.</p>
+                    
+                    <h3>“Not Enough Water Bowls”</h3>
+                    <p>The street animal problem is much more than just the neighborly affection that emerges during the cold winter months. In fact, it is a matter of social management and public health. With increasing urbanization and the loss of natural habitats, these animals are entirely dependent on human intervention. According to official estimates, there are approximately four million stray animals in Türkiye. However, experts emphasize that municipalities need to increase their sterilization capacity by 30% to manage this population in a healthy way.</p>
+
+                    <div class="pull-quote">
+                        <p>“People feel relieved when food is left at their doors. While this is well-intentioned, it is not enough. Our real task is to ensure that animals live and survive in harmony with the neighborhood. This can only be achieved through regular check-ups and sterilization.”</p>
+                        <cite>— Mrs. Sebahat Ezgün, Local Volunteer</cite>
+                    </div>
+
+                    <h3>The Struggle for Survival: From the Volunteers' Perspective</h3>
+                    <p>We meet with Mrs. Sebahat at one of the spots where food is left for street animals. She notes that the situation for stray animals has improved in recent years, but there is still much to be done.</p>
+
+                    <div class="interview-block">
+                        <p class="question">— What are the biggest challenges you face?</p>
+                        <p class="answer">“Unfortunately, we find ourselves caught between animal lovers and animal haters. But this isn't about taking sides. This is about the culture of living together. Leaving unhygienic food around disturbs neighbors, leading to resentment towards animals. As volunteers, we have a responsibility to protect both animals and the environment.”</p>
+                    </div>
+
+                    <img src="society3.jpeg" alt="Local volunteer feeding a stray cat at night" class="article-secondary-img">
+                   
+
+                    <h3>What can we do?</h3>
+                    <p>Our social responsibility shouldn't be limited to providing food. Experts and volunteers suggest the following steps for responsible citizenship:</p>
+                    <ul>
+                        <li><strong>Sterilization measures:</strong> Prevent uncontrolled breeding to improve the quality of life for animals and maintain urban balance.</li>
+                        <li><strong>Vaccination checks:</strong> In cooperation with local groups, ensure regular rabies and parasite vaccinations.</li>
+                        <li><strong>Suitable shelters:</strong> Create shelters that are environmentally friendly, isolated, and regularly cleaned.</li>
+                    </ul>
+
+                    <p>Stray animals reflect the level of compassion and civilization in a society. They are simply waiting for us to notice and respect them. Creating a habitat for them in the middle of concrete jungles means creating space for our own humanity as well.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- ================= HABER 2: SPORTS ================= -->
+    <div id="story2" class="page">
+        <div class="article-container">
+            <article>
+                <div class="article-header">
+                    <span class="article-tag">Sports</span>
+                    <h1 class="article-title">Breaking Barriers on the Court: Wheelchair Tennis</h1>
+                    <p class="article-sub">Behind every powerful stroke on the court lies a genuine story of discipline, intense training, and athletic commitment.</p>
+                    <div class="article-meta">Published: June 2026 | By Işıl Ezgün</div>
+                </div>
+                
+                <img src="sports2.jpeg" alt="Murat Arın preparing a hit during an indoor wheelchair tennis session" class="article-main-img">
+                
+
+                <div class="article-content">
+                    <p><strong>ISTANBUL —</strong> For many, a tennis court is a place of recreation; for Murat Arın, it is a space for high-intensity athleticism. Wheelchair tennis, a sport that demands intense upper-body strength, rapid wheelchair maneuvering, and sharp focus, is gaining momentum as a competitive discipline. Through his journey, Arın proves that physical limitations are simply challenges to overcome with the right training and dedication.</p>
+                    
+                    <p>We met with Murat Arın during one of his weekly training sessions to discuss the realities, victories, and daily infrastructure struggles of adaptive sports in the city.</p>
+
+                    <h3>The Reality on the Court</h3>
+                    <p>Adaptive sports require high coordination. A player has to control the tennis racket while rapidly turning and stopping a sports wheelchair at the same time.</p>
+
+                    <div class="interview-block">
+                        <p class="question">— How did you start wheelchair tennis, and what does this sport mean to you?</p>
+                        <p class="answer">"I started because I wanted to stay active and do a proper sport. In the beginning, it was really difficult to time the ball while moving the wheels. Your hands get callused, and you lose control of the racket a lot. But once you get used to the movement, it just becomes a great way to push yourself. It’s a space where I can focus purely on my performance and athleticism."</p>
+
+                        <p class="question">— What is the biggest barrier you face outside the court lines?</p>
+                        <p class="answer">"The main issue is the infrastructure. Traveling across Istanbul with a sports wheelchair is incredibly tough because of the pavements and public transport. Also, many sports facilities don't have proper ramps or accessible changing rooms. People often see adaptive tennis as just a hobby or a therapy session. But this is a highly competitive sport, and we just want equal access to the courts and proper training facilities."</p>
+                    </div>
+
+                    <img src="sports3.jpeg" alt="Murat Arın volleying the ball back to his training partner" class="article-secondary-img">
+                    
+
+                    <h3>Breaking Stigmas Through Performance</h3>
+                    <p>Wheelchair tennis does more than build physical strength; it actively challenges the passive role often assigned to individuals with physical disabilities by society. By mastering the court, athletes like Mr. Arın redefine the boundaries of what is possible in sports.</p>
+                    <p>The dynamic nature of the game brings athletes into active community life and breaks down institutional stigmas. Securing proper training hours and improving facility standards remain critical steps for the future growth of adaptive sports, encouraging a new generation of players to claim their space in the sporting world.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- ================= HABER 3: URBAN ================= -->
+    <div id="story3" class="page">
+        <div class="article-container">
+            <article>
+                <div class="article-header">
+                    <span class="article-tag">Urbanization</span>
+                    <h1 class="article-title">Kağıthane: A Landscape of Urban Transformation</h1>
+                    <p class="article-sub">The rapid rise of modern luxury residences directly challenges the traditional neighborhood culture and social structure of a historic district.</p>
+                    <div class="article-meta">Published: June 2026 | By Işıl Ezgün</div>
+                </div>
+                
+                <img src="urban3.jpeg" alt="Gated luxury complexes rising directly above old neighborhood structures" class="article-main-img">
+                
+
+                <div class="article-content">
+                    <p><strong>ISTANBUL —</strong> Kağıthane, once known as a core industrial and working-class district, is currently undergoing one of the fastest urban transformations in Istanbul. While massive luxury housing complexes and modern business centers reshape the physical skyline, the traditional neighborhood life that defined the area for decades is gradually disappearing. This architectural shift brings a complex set of economic and social changes for the people who call Kağıthane home.</p>
+                    
+                    <p>We walked through the changing streets of the district and spoke with long-term residents and local shopkeepers to document how urbanization affects daily community life.</p>
+
+                    <div class="pull-quote">
+                        <p>"The buildings are getting taller, but the neighborhood feels smaller."</p>
+                        <cite>— Mr. Necati, Local Resident</cite>
+                    </div>
+
+                    <h3>The Contrast on the Streets</h3>
+                    <p>The physical transformation of Kağıthane is visible on almost every corner. Old, low-rise family buildings now stand directly next to gated modern complexes, creating a sharp visual and social contrast.</p>
+
+                    <img src="urban1.jpeg" alt="Local resident Mr. Necati standing in front of a shop" class="article-secondary-img">
+                   
+
+                    <div class="interview-block">
+                        <p class="question">— How has the neighborhood changed since the luxury residences were built, and how does it affect your daily life?</p>
+                        <p class="answer">"I have lived here for over thirty years," says Mr. Necati, a long-term resident. "In the past, everyone knew each other, and children played together on the street. Now, the new buildings have high walls and security gates. The new residents don't really interact with the old neighborhood. The buildings are getting taller, but the community feels smaller and more disconnected."</p>
+
+                        <p class="question">— How is this transformation affecting local businesses and shopkeepers?</p>
+                        <p class="answer">"The customer base is changing completely," explains a local grocery shop owner. "The people moving into the luxury complexes prefer big supermarket chains instead of shopping from local tradesmen. At the same time, shop rents are rising rapidly because the area is becoming more valuable. Many small shopkeepers who have been here for decades are struggling to survive or are forcing to close down."</p>
+                    </div>
+
+                    <h3>The Evolving Social Fabric</h3>
+                    <p>Urban transformation is not just about replacing old concrete with new glass structures; it fundamentally alters the social habits and economic balance of a district.</p>
+                    <p>As high-rise developments continue to expand, finding a balance between modernization and preserving local heritage remains a major challenge for Kağıthane. The preservation of communal spaces, parks, and traditional high streets is vital to preventing complete social isolation and ensuring that the district's history is not entirely erased by gentrification.</p>
+
+                    <img src="urban4.jpeg" alt="Winding uphill street in Kağıthane showcasing traditional apartment housing styles" class="article-secondary-img">
+                   
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- ================= HABER 4: ECONOMIC (GÜNCELLENMİŞ TAM İÇERİK) ================= -->
+    <div id="story4" class="page">
+        <div class="article-container">
+            <article>
+                <div class="article-header">
+                    <span class="article-tag">Economy</span>
+                    <h1 class="article-title">Between the Wallet and the Counter: Economic Pressures on Local Shops</h1>
+                    <p class="article-sub">Rising operating costs and shrinking customer budgets place a heavy dual burden on traditional neighborhood businesses.</p>
+                    <div class="article-meta">Published: June 2026 | By Işıl Ezgün</div>
+                </div>
+                
+                <img src="economic1.jpeg" alt="Display of traditional prepared food dishes at a local restaurant" class="article-main-img">
+                
+
+                <div class="article-content">
+                    <p><strong>ISTANBUL —</strong> The ongoing economic fluctuations in Turkey are changing the landscape of local commerce. For decades, neighborhood shops like grocers, butchers, and bakers served as the social and economic backbone of local communities. Today, however, these small businesses are caught in a difficult position: they must balance their own rapidly rising operating costs against the shrinking purchasing power of their daily customers.</p>
+                    
+                    <p>We visited several local shops to interview business owners and neighborhood residents about their daily struggles to maintain financial balance.</p>
+
+                    <div class="pull-quote">
+                        <p>"Customers look at the prices, look at their wallets, and leave with half of what they used to buy."</p>
+                        <cite>— Mr. Ahmet, Local Shopkeeper</cite>
+                    </div>
+
+                    <h3>The Dual Pressure</h3>
+                    <p>Small business owners face inflation from two sides: the increasing cost of supplying goods and the declining ability of their community to afford them.</p>
+
+                    <img src="economic3.jpeg" alt="Local tradesman Ahmet Bey inside his shop corner counter" class="article-secondary-img">
+                
+
+                    <div class="interview-block">
+                        <p class="question">— How have the recent economic fluctuations affected your business operations and your relationship with customers?</p>
+                        <p class="answer">"My wholesale costs change almost every week," explains Mr. Ahmet, a local shopkeeper. "If I reflect these increases directly onto the shelves, my customers cannot afford to buy. If I don't, I cannot pay my shop rent or utility bills. Customers look at the prices, look at their wallets, and leave with half of what they used to buy. The trust is still there, but the money isn't."</p>
+
+                        <p class="question">— As a resident, how has this economic situation changed your daily shopping habits?</p>
+                        <p class="answer">"We have to calculate every single expense now," says a neighborhood resident. "In the past, we did all our shopping from the local shops on our street. Now, we are forced to hunt for discounts and choose cheaper supermarket chains, even though we want to support our local tradesmen. Buying power has dropped so significantly that basic items feel like a luxury."</p>
+                    </div>
+
+                    <h3>Visualizing the Economic Shift</h3>
+                    <p>The struggle to maintain purchasing power is a structural issue altering the survival rate of family-owned businesses across the city. To support these findings, visuals and graphics are integrated into the report to illustrate the precise gap between rising supply costs and average household budgets.</p>
+
+                    <img src="economic4.jpeg" alt="Bar chart comparing staple grocery costs between 2025 and 2026" class="article-secondary-img">
+                    <div class="img-caption">Figure 3: Data matrix highlighting the annual price shifts across common essential commodities.</div>
+
+                    <img src="economic5.jpeg" alt="Expense layout chart showing operational overhead shares against profit margin" class="article-secondary-img">
+                    
+                    <p>Without structural support or local community intervention, the traditional counter separating the local seller and the neighborhood buyer faces an uncertain financial future.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Stars News ✦.</p>
+    </footer>
+
+    <!-- SPA SAYFA GEÇİŞ SCRIPTI -->
+    <script>
+        function navigateTo(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            const activePage = document.getElementById(pageId);
+            if (activePage) {
+                activePage.classList.add('active');
+            }
+
+            const links = document.querySelectorAll('.nav-links a');
+            links.forEach(link => link.classList.remove('active'));
+            
+            const activeLink = document.getElementById('nav-' + pageId);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
